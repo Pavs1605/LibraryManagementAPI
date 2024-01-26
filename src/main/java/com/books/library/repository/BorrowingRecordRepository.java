@@ -7,6 +7,8 @@ import com.books.library.model.Patron;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,6 +21,9 @@ public interface BorrowingRecordRepository extends JpaRepository<BorrowingRecord
 
     public Page<BorrowingRecord> findByBook_BookIdOrderByBorrowingDateDesc(Long bookId, Pageable pageable);
     public Page<BorrowingRecord> findByPatron_PatronIdOrderByBorrowingDateDesc(Long patronId, Pageable pageable);
+
+    @Query("SELECT DISTINCT br.book FROM BorrowingRecord br WHERE br.bookState = 'BORROWED'")
+    List<Book> findDistinctBooksBorrowed();
 
     List<BorrowingRecord> findByBook_BookIdAndBookState(Long bookId, BookState bookState);
 

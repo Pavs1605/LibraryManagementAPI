@@ -9,13 +9,17 @@ import com.books.library.repository.BookRepository;
 import com.books.library.repository.BorrowingRecordRepository;
 import com.books.library.repository.PatronRepository;
 import com.books.library.service.BorrowingRecordService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BorrowingRecordServiceImpl implements BorrowingRecordService {
@@ -48,6 +52,7 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
     //if a book is available, then you can borrow
     //person does not exist or book does not exist, return appropriate error
     @Override
+    @Transactional
     public BorrowingRecord borrowBook(Long bookId, Long patronId) {
         BorrowingRecord rec = new BorrowingRecord();
 
@@ -63,7 +68,6 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
             rec.setBook(bookRepository.findById(bookId).orElse(null));
             rec.setPatron(patronRepository.findById(patronId).orElse(null));
             rec.setBorrowingDate(LocalDate.now());
-            rec.setBookAvailable(false);
             rec.setBookState(BookState.BORROWED);
             borrowingRecordRepository.save(rec);
         }
@@ -72,6 +76,7 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
 
 
     @Override
+    @Transactional
     public void returnBook(Long bookId, Long patronId) {
         BorrowingRecord obj = new BorrowingRecord();
         //check if book exist
@@ -91,6 +96,9 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
             obj.setReturnDate(LocalDate.now());
             borrowingRecordRepository.save(obj);
         }
+        else {
+            throw new BookCannotBeReturnedException("Book cannot be returned");
+        }
 
 
     }
@@ -105,6 +113,35 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
     public Page<BorrowingRecord> getRecordsByBookId(Long bookId, Pageable pageable) {
            return  borrowingRecordRepository.findByBook_BookIdOrderByBorrowingDateDesc(bookId, pageable);
 
+    }
+
+    @Override
+    public Page<Book> getFreeBooks(Pageable pageable) {
+        Page<Book> bookList = bookRepository.findAll(pageable);
+        List<Book> borrowingRecords = borrowingRecordRepository.findDistinctBooksBorrowed();
+
+        List<Book> booksToRemove = new ArrayList<>(borrowingRecords);
+        List<Book> allBooksList = new ArrayList<>(bookList.getContent());
+        allBooksList.removeAll(booksToRemove);
+
+        return convertListToPage(allBooksList, pageable);
+    }
+
+    private Page<Book> convertListToPage(List<Book> bookList, Pageable pageable) {
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+
+        List<Book> pageList;
+
+        if (bookList.size() < startItem) {
+            pageList = List.of();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, bookList.size());
+            pageList = bookList.subList(startItem, toIndex);
+        }
+
+        return new PageImpl<>(pageList, pageable, bookList.size());
     }
 
 

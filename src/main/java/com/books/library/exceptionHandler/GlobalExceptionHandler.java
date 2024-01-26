@@ -1,9 +1,6 @@
 package com.books.library.exceptionHandler;
 
-import com.books.library.exception.BookNotAvailableException;
-import com.books.library.exception.BookNotFoundException;
-import com.books.library.exception.InvalidBookOwnerException;
-import com.books.library.exception.PatronNotFoundException;
+import com.books.library.exception.*;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -24,33 +21,21 @@ import java.util.List;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(BookNotFoundException.class)
+    @ExceptionHandler({BookNotFoundException.class,PatronNotFoundException.class })
     protected ResponseEntity<Object> handleBookNotFound(BookNotFoundException ex, WebRequest request) {
         String path = request.getDescription(false); // Obtain the path dynamically
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage(), ex, path);
         return buildResponseEntity(errorResponse);
     }
 
-    @ExceptionHandler(PatronNotFoundException.class)
-    protected ResponseEntity<Object> handlePatronNotFound(PatronNotFoundException ex, WebRequest request) {
-        String path = request.getDescription(false); // Obtain the path dynamically
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage(), ex, path);
-        return buildResponseEntity(errorResponse);
-    }
 
-    @ExceptionHandler(BookNotAvailableException.class)
+    @ExceptionHandler({BookNotAvailableException.class,InvalidBookOwnerException.class, BookCannotBeReturnedException.class })
     protected ResponseEntity<Object> handleBookNotAvailable(BookNotAvailableException ex, WebRequest request) {
         String path = request.getDescription(false); // Obtain the path dynamically
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), ex, path);
         return buildResponseEntity(errorResponse);
     }
 
-    @ExceptionHandler(InvalidBookOwnerException.class)
-    protected ResponseEntity<Object> handleInvalidOwner(InvalidBookOwnerException ex, WebRequest request) {
-        String path = request.getDescription(false); // Obtain the path dynamically
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), ex, path);
-        return buildResponseEntity(errorResponse);
-    }
 
 
     private ResponseEntity<Object> buildResponseEntity(ErrorResponse customExceptionResponse) {

@@ -1,5 +1,6 @@
 package com.books.library.service;
 
+import com.books.library.model.Book;
 import com.books.library.model.BorrowingRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,8 @@ public interface BorrowingRecordService {
     public Page<BorrowingRecord> getRecordsByPatronId(Long patronId, Pageable pageable);
 
     public Page<BorrowingRecord> getRecordsByBookId(Long bookId, Pageable pageable);
+
+    public Page<Book> getFreeBooks(Pageable pageable);
 
 
 }

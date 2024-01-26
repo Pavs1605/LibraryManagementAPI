@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDate;
 @Entity
-@Table(name = "borrowing_records")
+@Table(name = "borrowing_records", uniqueConstraints = @UniqueConstraint(columnNames={"book_id", "patron_id", "borrowingDate"}))
 public class BorrowingRecord {
 
     @Id
@@ -25,6 +25,7 @@ public class BorrowingRecord {
     private Patron patron;
     @Transient
     String patronName;
+
     @Transient
     String bookTitle;
     @Transient
@@ -33,16 +34,42 @@ public class BorrowingRecord {
     private LocalDate borrowingDate;
     private LocalDate returnDate;
 
-    private Boolean bookAvailable;
+
     @Column(name = "book_state", nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'FREE'") // Adjust length as needed
     @Enumerated(EnumType.STRING)
     private BookState bookState;
 
+    @Transient
+    public Long bookId;
+
+
+
+    @Transient
+    public Long patronId;
+
+    public BorrowingRecord(){
+
+    }
+
+    public BorrowingRecord(Book book, Patron patron, LocalDate borrowingDate, LocalDate returnDate, BookState bookState) {
+        this.book = book;
+        this.patron = patron;
+        this.borrowingDate = borrowingDate;
+        this.returnDate = returnDate;
+        this.bookState = bookState;
+    }
     public String getPatronName() {
         return patron != null ? patron.getName() : null;
     }
 
+    public Long getBookId() {
+        return book != null ? book.getBookId() : null;
 
+    }
+
+    public Long getPatronId() {
+        return patron != null ? patron.getPatronId() : null;
+    }
 
     public String getBookTitle() {
         return book != null ? book.getTitle() : null;
@@ -53,11 +80,6 @@ public class BorrowingRecord {
         return  book != null ? book.getAuthor() : null;
     }
 
-
-
-    public Boolean getBookAvailable() {
-        return bookAvailable;
-    }
 
 
     public Long getBorrowingId() {
@@ -100,13 +122,6 @@ public class BorrowingRecord {
         this.returnDate = returnDate;
     }
 
-    public Boolean isBookAvailable() {
-        return bookAvailable;
-    }
-
-    public void setBookAvailable(Boolean bookAvailable) {
-        this.bookAvailable = bookAvailable;
-    }
 
     public BookState getBookState() {
         return bookState;

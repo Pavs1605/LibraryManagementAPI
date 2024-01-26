@@ -21,6 +21,16 @@ public class Patron {
     String emailAddress;
 
     String address;
+    public Patron(){
+
+    }
+    public Patron(String name, String contactNo, String emailAddress, String address) {
+        this.name = name;
+        this.contactNo = contactNo;
+        this.emailAddress = emailAddress;
+        this.address = address;
+    }
+
     public String getAddress() {
         return address;
     }

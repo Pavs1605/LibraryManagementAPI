@@ -24,6 +24,18 @@ public class Book {
     Long serialNumber;
     String description;
 
+    public Book(){
+
+    }
+    public Book(String title, String author, Long publicationYear, String isbnNumber, Long serialNumber, String description) {
+        this.title = title;
+        this.author = author;
+        this.publicationYear = publicationYear;
+        this.isbnNumber = isbnNumber;
+        this.serialNumber = serialNumber;
+        this.description = description;
+    }
+
     public Long getBookId() {
         return bookId;
     }
