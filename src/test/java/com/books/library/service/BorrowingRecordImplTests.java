@@ -1,6 +1,5 @@
 package com.books.library.service;
 
-import com.books.library.exception.*;
 import com.books.library.model.Book;
 import com.books.library.model.BorrowingRecord;
 import com.books.library.model.Patron;
@@ -16,10 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,8 +43,13 @@ class BorrowingRecordServiceImplTest {
     private BorrowingRecordServiceImpl borrowingRecordService;
 
     private BorrowingRecord testRecord;
+    private BorrowingRecord secondTestRecord;
     private Book testBook;
+    private Book secondTestBook;
+
     private Patron testPatron;
+    private Patron secondTestPatron;
+
 
     @BeforeEach
     void setUp() {
@@ -61,6 +67,21 @@ class BorrowingRecordServiceImplTest {
         testRecord.setPatron(testPatron);
         testRecord.setBorrowingDate(LocalDate.now());
         testRecord.setBookState(BookState.BORROWED);
+
+        secondTestBook = new Book();
+        secondTestBook.setBookId(2L);
+        secondTestBook.setTitle("Second Book");
+
+        secondTestPatron = new Patron();
+        secondTestPatron.setPatronId(2L);
+        secondTestPatron.setName("Second Patron");
+
+        secondTestRecord = new BorrowingRecord();
+        secondTestRecord.setBorrowingId(2L);
+        secondTestRecord.setBook(secondTestBook);
+        secondTestRecord.setPatron(secondTestPatron);
+        secondTestRecord.setBorrowingDate(LocalDate.now());
+        secondTestRecord.setBookState(BookState.BORROWED);
     }
 
     @Test
@@ -77,16 +98,24 @@ class BorrowingRecordServiceImplTest {
 
     @Test
     void testBorrowBook() {
-        when(bookRepository.findByBookId(anyLong())).thenReturn(testBook);
-        when(patronRepository.findByPatronId(anyLong())).thenReturn(testPatron);
+        List<BorrowingRecord> records = new ArrayList<>();
+        records.add(testRecord);
+        when(bookRepository.findByBookId(anyLong())).thenReturn(secondTestBook);
+        when(patronRepository.findByPatronId(anyLong())).thenReturn(secondTestPatron);
         when(borrowingRecordRepository.findByBook_BookIdAndPatron_PatronIdAndBookState(anyLong(), anyLong(), eq(BookState.BORROWED))).thenReturn(new ArrayList<>());
         when(borrowingRecordRepository.findByBook_BookIdAndBookState(anyLong(), eq(BookState.BORROWED))).thenReturn(new ArrayList<>());
-        when(borrowingRecordRepository.save(any(BorrowingRecord.class))).thenReturn(testRecord);
 
-        BorrowingRecord result = borrowingRecordService.borrowBook(1L, 1L);
+//        // Mock behaviors
+//        when(bookRepository.findById(2L)).thenReturn(Optional.of(secondTestBook)); // Fix this line
 
+        // Call the method under test
+        BorrowingRecord result = borrowingRecordService.borrowBook(2L, 2L);
+
+        // Assertions
         assertNotNull(result);
-        assertEquals(testRecord, result);
+        assertEquals(secondTestRecord.getBook(), result.getBook());
+        assertEquals(secondTestRecord.getPatron(), result.getPatron());
+        assertEquals(LocalDate.now(), result.getBorrowingDate());
         assertEquals(BookState.BORROWED, result.getBookState());
     }
 
@@ -94,6 +123,8 @@ class BorrowingRecordServiceImplTest {
     void testReturnBook() {
         List<BorrowingRecord> records = new ArrayList<>();
         records.add(testRecord);
+        when(bookRepository.findByBookId(anyLong())).thenReturn(testBook);
+        when(patronRepository.findByPatronId(anyLong())).thenReturn(testPatron);
         when(borrowingRecordRepository.findByBook_BookIdAndPatron_PatronIdAndBookState(anyLong(), anyLong(), eq(BookState.BORROWED))).thenReturn(records);
 
         borrowingRecordService.returnBook(1L, 1L);
@@ -128,17 +159,26 @@ class BorrowingRecordServiceImplTest {
 
     @Test
     void testGetFreeBooks() {
+        // Mocking the pageable object
         Pageable pageable = mock(Pageable.class);
-        Page<Book> bookPage = mock(Page.class);
-        when(bookRepository.findAll(pageable)).thenReturn(bookPage);
 
-        List<Book> borrowedBooks = new ArrayList<>();
-        borrowedBooks.add(testBook);
+        // Mocking the list of books and the page
+        List<Book> allBooks = Arrays.asList(testBook, secondTestBook);
+        Page<Book> bookPage = new PageImpl<>(allBooks, pageable, allBooks.size());
+
+        // Mocking borrowed books
+        List<Book> borrowedBooks = Arrays.asList(testBook); // Assuming testBook is borrowed
         when(borrowingRecordRepository.findDistinctBooksBorrowed()).thenReturn(borrowedBooks);
 
+        // Mocking bookRepository to return all books
+        when(bookRepository.findAll(pageable)).thenReturn(bookPage);
+
+        // Calling the method under test
         Page<Book> result = borrowingRecordService.getFreeBooks(pageable);
 
+        // Verifying the result
         assertNotNull(result);
-        assertEquals(bookPage, result);
+        assertEquals(1, result.getContent().size()); // Assuming two books are not borrowed
+        assertTrue(result.getContent().contains(secondTestBook)); // Asserting one of the not borrowed books
     }
 }

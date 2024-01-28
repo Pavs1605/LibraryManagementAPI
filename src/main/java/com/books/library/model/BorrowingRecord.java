@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 import java.time.LocalDate;
+import java.util.Objects;
+
 @Entity
 @Table(name = "borrowing_records", uniqueConstraints = @UniqueConstraint(columnNames={"book_id", "patron_id", "borrowingDate"}))
 public class BorrowingRecord {
@@ -129,5 +131,23 @@ public class BorrowingRecord {
 
     public void setBookState(BookState bookState) {
         this.bookState = bookState;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        BorrowingRecord other = (BorrowingRecord) obj;
+        return Objects.equals(this.bookId, other.bookId) &&
+                Objects.equals(this.borrowingId, other.borrowingId) &&
+                Objects.equals(this.patronId, other.patronId) &&
+                Objects.equals(this.bookState, other.bookState) &&
+                Objects.equals(this.borrowingDate, other.borrowingDate) &&
+                Objects.equals(this.returnDate, other.returnDate);
     }
 }

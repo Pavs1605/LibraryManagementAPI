@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,8 +66,8 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
 
         //check if available to borrow
         if (isBookFreeToBorrow(bookId, patronId)) {
-            rec.setBook(bookRepository.findById(bookId).orElse(null));
-            rec.setPatron(patronRepository.findById(patronId).orElse(null));
+            rec.setBook(bookRepository.findByBookId(bookId));
+            rec.setPatron(patronRepository.findByPatronId(patronId));
             rec.setBorrowingDate(LocalDate.now());
             rec.setBookState(BookState.BORROWED);
             borrowingRecordRepository.save(rec);
@@ -134,12 +135,14 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
 
         List<Book> pageList;
 
-        if (bookList.size() < startItem) {
-            pageList = List.of();
+        if (startItem >= bookList.size()) {
+            pageList = Collections.emptyList(); // No items in the page
         } else {
             int toIndex = Math.min(startItem + pageSize, bookList.size());
+            toIndex = Math.max(toIndex, startItem + 1);
             pageList = bookList.subList(startItem, toIndex);
         }
+
 
         return new PageImpl<>(pageList, pageable, bookList.size());
     }
