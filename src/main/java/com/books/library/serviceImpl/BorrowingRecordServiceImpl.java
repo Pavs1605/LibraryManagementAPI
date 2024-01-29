@@ -48,10 +48,12 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
         return borrowingRecordRepository.findByBook_BookIdAndPatron_PatronId(bookId, patronId, pageable);
     }
 
-    //smae person cannot borrow same book
+    /* Rules
+    //same person cannot borrow same book
     //if a book is not available, no one can have it
     //if a book is available, then you can borrow
     //person does not exist or book does not exist, return appropriate error
+    */
     @Override
     @Transactional
     public BorrowingRecord borrowBook(Long bookId, Long patronId) {
