@@ -1,4 +1,4 @@
-##Library Management App
+## Library Management App
 This is a simple Spring Boot application for Library Management  that manages books and patrons. The application also manages borrowing and returning of books and maintaining a transaction history
 
 ## Design considerations
@@ -20,7 +20,7 @@ This is a simple Spring Boot application for Library Management  that manages bo
 ## Postman Collection with list of API's
 * Start the application by running Library Application.java class and run below end points to see data.
   ![img.png](img.png)
-  [Postman_collection](Postman_collection)
+  Import following collection to see more results - [Postman_collection](Postman_collection)
 
 ## Entities
 Book
@@ -54,29 +54,29 @@ Link - https://pavs1605.github.io/LibraryManagementAPI/
 
 
 ## Test Report Results
-Run tests using mvn test
-Output :
-main] .c.s.DirtiesContextTestExecutionListener : After test class: class [LibraryApplicationTests], class annotated with @DirtiesContext [false] with mode [null]
-[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.416 s -- in com.books.library.LibraryApplicationTests
-[INFO] Running com.books.library.repository.BorrowingRecordRepositoryTest
-[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.558 s -- in com.books.library.repository.BorrowingRecordRepositoryTest
-[INFO] Running com.books.library.service.BookServiceImplTest
-[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.493 s -- in com.books.library.service.BookServiceImplTest
-[INFO] Running com.books.library.service.BorrowingRecordServiceImplTest
-[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.178 s -- in com.books.library.service.BorrowingRecordServiceImplTest
-[INFO] Running com.books.library.service.PatronServiceImplTest
-[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.037 s -- in com.books.library.service.PatronServiceImplTest
-[INFO]
-[INFO] Results:
-[INFO]
-[INFO] Tests run: 23, Failures: 0, Errors: 0, Skipped: 0
-[INFO]
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  16.332 s
-[INFO] Finished at: 2024-01-29T06:42:26+04:00
-[INFO] ------------------------------------------------------------------------
+Run tests using command - mvn test
+* Output :
+* main] .c.s.DirtiesContextTestExecutionListener : After test class: class [LibraryApplicationTests], class annotated with @DirtiesContext [false] with mode [null]
+* [INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.416 s -- in com.books.library.LibraryApplicationTests
+* [INFO] Running com.books.library.repository.BorrowingRecordRepositoryTest
+* [INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.558 s -- in com.books.library.repository.BorrowingRecordRepositoryTest
+* [INFO] Running com.books.library.service.BookServiceImplTest
+* [INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.493 s -- in com.books.library.service.BookServiceImplTest
+* [INFO] Running com.books.library.service.BorrowingRecordServiceImplTest
+* [INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.178 s -- in com.books.library.service.BorrowingRecordServiceImplTest
+* [INFO] Running com.books.library.service.PatronServiceImplTest
+* [INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.037 s -- in com.books.library.service.PatronServiceImplTest
+* [INFO]
+* [INFO] Results:
+* [INFO]
+* [INFO] Tests run: 23, Failures: 0, Errors: 0, Skipped: 0
+* [INFO]
+* [INFO] ------------------------------------------------------------------------
+* [INFO] BUILD SUCCESS
+* [INFO] ------------------------------------------------------------------------
+* [INFO] Total time:  16.332 s
+* [INFO] Finished at: 2024-01-29T06:42:26+04:00
+* [INFO] ------------------------------------------------------------------------
 
 
 
