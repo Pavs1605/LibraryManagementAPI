@@ -1,0 +1,605 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /api/records/return/{bookId}/patron/{patronId}:
+    put:
+      tags:
+        - borrowing-record-controller
+      summary: Return a book giving bookId & patronId
+      description: Soft delete of the transaction
+      operationId: returnBook
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: patronId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Successfully returned/No content
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: >-
+            Bad request - Invalid owner, book cannot be returned, book not
+            available
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Not found - The patron or book was not found
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/patron/{patronId}:
+    get:
+      tags:
+        - patron-controller
+      summary: Get all patrons by patron Id
+      description: Returns single patron information
+      operationId: getPatron
+      parameters:
+        - name: patronId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patron'
+        '404':
+          description: Not found - The patron was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patron'
+    put:
+      tags:
+        - patron-controller
+      summary: Updates a patron using patron id
+      description: Returns updated  patron
+      operationId: updatePatron
+      parameters:
+        - name: patronId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Patron'
+        required: true
+      responses:
+        '200':
+          description: Successfully Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patron'
+        '404':
+          description: Not found - The patron was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patron'
+    delete:
+      tags:
+        - patron-controller
+      summary: Deletes a patron using patron id
+      description: Deletes patron
+      operationId: deletePatron
+      parameters:
+        - name: patronId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Successfully Deleted/No content
+        '404':
+          description: Not found - The patron was not found
+  /api/books/{bookId}:
+    get:
+      tags:
+        - book-controller
+      summary: Get a single book by book Id
+      description: Returns single book with book details
+      operationId: getBook
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Not found - The book was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+    put:
+      tags:
+        - book-controller
+      summary: Updates a book using bookId
+      description: Updates a book in the system using bookId and returns updated book
+      operationId: updateBook
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+        required: true
+      responses:
+        '200':
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Not found - The book was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+    delete:
+      tags:
+        - book-controller
+      summary: Deletes a book  using bookId
+      description: Deletes a book in the system using bookId
+      operationId: deleteBook
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Successfully deleted/No content
+        '404':
+          description: Not found - The book was not found
+  /api/records/borrow/{bookId}/patron/{patronId}:
+    post:
+      tags:
+        - borrowing-record-controller
+      summary: Borrow a book giving bookId & patronId
+      description: >-
+        Creates a transaction entry & Returns transaction details that book is
+        assigned to patron
+      operationId: borrowBook
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: patronId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully borrowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BorrowingRecord'
+        '400':
+          description: >-
+            Bad request - Invalid owner, book cannot be returned, book not
+            available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BorrowingRecord'
+        '404':
+          description: Not found - The patron or book was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BorrowingRecord'
+  /api/patron:
+    get:
+      tags:
+        - patron-controller
+      summary: Get all patrons available
+      description: Returns list of patrons available
+      operationId: getAllPatrons
+      parameters:
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Pageable'
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        '404':
+          description: Not found - The patron was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+    post:
+      tags:
+        - patron-controller
+      summary: Creates a patron
+      description: Returns newly created patron
+      operationId: createPatron
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Patron'
+        required: true
+      responses:
+        '201':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Not found - The patron was not found
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/books:
+    get:
+      tags:
+        - book-controller
+      summary: Get all books available
+      description: Returns list of books available
+      operationId: getAllBooks
+      parameters:
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Pageable'
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        '404':
+          description: Not found - The book was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+    post:
+      tags:
+        - book-controller
+      summary: 'Creates a book in the system '
+      description: Creates a book in the system and returns newly created book
+      operationId: createBook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+        required: true
+      responses:
+        '201':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Not found - The book was not found
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/records/records/:
+    get:
+      tags:
+        - borrowing-record-controller
+      summary: Get all transactions of books
+      description: Returns list of transaction records of books being borrowed and deleted
+      operationId: getAllRecords
+      parameters:
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Pageable'
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+  /api/records/patron/{patronId}:
+    get:
+      tags:
+        - borrowing-record-controller
+      summary: Gets the history of all transaction records for a patron using patronId
+      description: Returns the list of transaction records for the patron
+      operationId: getRecordsByPatronId
+      parameters:
+        - name: patronId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Pageable'
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        '404':
+          description: Not found - The patron was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+  /api/records/freeBooks/:
+    get:
+      tags:
+        - borrowing-record-controller
+      summary: >-
+        Gets the list of free books available in the system which are not
+        borrowed
+      description: Returns the list of free books available in the system
+      operationId: getFreeBooks
+      parameters:
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Pageable'
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+  /api/records/book/{bookId}:
+    get:
+      tags:
+        - borrowing-record-controller
+      summary: Gets the history of all transaction  records for a bookId
+      description: Returns the list of transaction records for the book
+      operationId: getRecordsByBookId
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Pageable'
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        '404':
+          description: Not found - The book was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+  /api/records/book/{bookId}/patron/{patronId}:
+    get:
+      tags:
+        - borrowing-record-controller
+      summary: >-
+        Gets the history of transaction records for a user who has taken same
+        book multiple times
+      description: >-
+        Returns the list of transaction records for the combination of book and
+        patron
+      operationId: getRecordsByBookIdAndPatronId
+      parameters:
+        - name: patronId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Pageable'
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+        '404':
+          description: Not found - The patron or book was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+components:
+  schemas:
+    Patron:
+      type: object
+      properties:
+        patronId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        contactNo:
+          pattern: ^\+?[0-9]+$
+          type: string
+        emailAddress:
+          type: string
+        address:
+          type: string
+    Book:
+      type: object
+      properties:
+        bookId:
+          type: integer
+          format: int64
+        title:
+          type: string
+        author:
+          pattern: ^[a-zA-Z ]+$
+          type: string
+        publicationYear:
+          type: integer
+          format: int64
+        isbnNumber:
+          pattern: ^[0-9-]+$
+          type: string
+        serialNumber:
+          type: integer
+          format: int64
+        description:
+          type: string
+    BorrowingRecord:
+      type: object
+      properties:
+        borrowingId:
+          type: integer
+          format: int64
+        patronName:
+          type: string
+        bookTitle:
+          type: string
+        author:
+          type: string
+        borrowingDate:
+          type: string
+          format: date
+        returnDate:
+          type: string
+          format: date
+        bookState:
+          type: string
+          enum:
+            - FREE
+            - NOT_EXISTS
+            - BORROWED
+            - RETURNED
+        bookId:
+          type: integer
+          format: int64
+        patronId:
+          type: integer
+          format: int64
+    Pageable:
+      type: object
+      properties:
+        page:
+          minimum: 0
+          type: integer
+          format: int32
+        size:
+          minimum: 1
+          type: integer
+          format: int32
+        sort:
+          type: array
+          items:
+            type: string

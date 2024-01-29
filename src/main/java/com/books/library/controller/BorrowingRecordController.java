@@ -139,7 +139,7 @@ public class BorrowingRecordController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/records/freeBooks/",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/freeBooks/",produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Gets the list of free books available in the system which are not borrowed", description = "Returns the list of free books available in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved")
