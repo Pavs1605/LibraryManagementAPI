@@ -1,0 +1,211 @@
+{
+	"info": {
+		"_postman_id": "4345e2a2-18ff-4f3f-9669-8cba5d593a1c",
+		"name": "LibraryManagementSystem",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "4671293"
+	},
+	"item": [
+		{
+			"name": "GET all books",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/api/books"
+			},
+			"response": []
+		},
+		{
+			"name": "Create book",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"The Odyssey\",\r\n    \"author\": \"Homer\",\r\n    \"publicationYear\": \"1876\",\r\n    \"isbnNumber\": \"232222-1212-121212\",\r\n    \"serialNumber\": \"012345\",\r\n    \"description\": \"Epic poem\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/api/books"
+			},
+			"response": []
+		},
+		{
+			"name": "Update book",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"The Odyssey\",\r\n    \"author\": \"Homer\",\r\n    \"publicationYear\": \"8th century BCE\",\r\n    \"isbnNumber\": \"N/A\",\r\n    \"serialNumber\": \"012345\",\r\n    \"description\": \"Epic poemmmm\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/api/books/1"
+			},
+			"response": []
+		},
+		{
+			"name": "get a single book",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/api/books/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete book",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:8080/api/books/1"
+			},
+			"response": []
+		},
+		{
+			"name": "GET all Patrons",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/api/patron"
+			},
+			"response": []
+		},
+		{
+			"name": "Create patron",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n    \"name\": \"Charlie Green\",\r\n    \"contactNo\": \"+555444333\",\r\n    \"emailAddress\": \"charlie.green@example.com\",\r\n    \"address\": \"404 Maple Court, State\"\r\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/api/patron"
+			},
+			"response": []
+		},
+		{
+			"name": "Update patron",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Charlie Green\",\r\n    \"contactNo\": \"+5515444333\",\r\n    \"emailAddress\": \"charlie.green@example.com\",\r\n    \"address\": \"404 Maple Court, State\"\r\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/api/patron/7"
+			},
+			"response": []
+		},
+		{
+			"name": "get single patron",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/api/patron/7"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Patron",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:8080/api/patron/1"
+			},
+			"response": []
+		},
+		{
+			"name": "borrow api",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "http://localhost:8080/api/borrow/3/patron/10"
+			},
+			"response": []
+		},
+		{
+			"name": "return api",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": "http://localhost:8080/api/return/2/patron/1"
+			},
+			"response": []
+		},
+		{
+			"name": "GET all borrow records",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/api/patron"
+			},
+			"response": []
+		},
+		{
+			"name": "recordsByBookPatron",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/api/records/book/1/patron/1"
+			},
+			"response": []
+		},
+		{
+			"name": "recordsByBooks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/api/records/book/1"
+			},
+			"response": []
+		},
+		{
+			"name": "recordsByPatron",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/api/records/patron/1"
+			},
+			"response": []
+		},
+		{
+			"name": "freebooks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/api/records/patron/2"
+			},
+			"response": []
+		}
+	]
+}

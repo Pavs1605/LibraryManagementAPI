@@ -1,5 +1,8 @@
 package com.books.library.service;
 
+import com.books.library.exception.BookNotAvailableException;
+import com.books.library.exception.InvalidBookOwnerException;
+import com.books.library.exception.PatronNotFoundException;
 import com.books.library.model.Book;
 import com.books.library.model.BorrowingRecord;
 import com.books.library.model.Patron;
@@ -105,8 +108,6 @@ class BorrowingRecordServiceImplTest {
         when(borrowingRecordRepository.findByBook_BookIdAndPatron_PatronIdAndBookState(anyLong(), anyLong(), eq(BookState.BORROWED))).thenReturn(new ArrayList<>());
         when(borrowingRecordRepository.findByBook_BookIdAndBookState(anyLong(), eq(BookState.BORROWED))).thenReturn(new ArrayList<>());
 
-//        // Mock behaviors
-//        when(bookRepository.findById(2L)).thenReturn(Optional.of(secondTestBook)); // Fix this line
 
         // Call the method under test
         BorrowingRecord result = borrowingRecordService.borrowBook(2L, 2L);
@@ -118,6 +119,41 @@ class BorrowingRecordServiceImplTest {
         assertEquals(LocalDate.now(), result.getBorrowingDate());
         assertEquals(BookState.BORROWED, result.getBookState());
     }
+
+    @Test
+    void testBorrowBookAPI_AlreadyBorrowedBook() {
+        List<BorrowingRecord> records = new ArrayList<>();
+        records.add(testRecord);
+        when(bookRepository.findByBookId(anyLong())).thenReturn(testBook);
+        when(patronRepository.findByPatronId(anyLong())).thenReturn(testPatron);
+        when(borrowingRecordRepository.findByBook_BookIdAndPatron_PatronIdAndBookState(anyLong(), anyLong(), eq(BookState.BORROWED))).thenReturn(records);
+        when(borrowingRecordRepository.findByBook_BookIdAndBookState(anyLong(), eq(BookState.BORROWED))).thenReturn(new ArrayList<>());
+
+            // Assertions
+        assertThrows(InvalidBookOwnerException.class, () -> {
+            borrowingRecordService.borrowBook(1L, 1L);
+        });
+
+    }
+
+    @Test
+    void testBorrowBookAPI_TwoPeopleBuyingSameBook() {
+
+        List<BorrowingRecord> records = new ArrayList<>();
+        records.add(testRecord);
+        when(bookRepository.findByBookId(anyLong())).thenReturn(testBook);
+        when(patronRepository.findByPatronId(anyLong())).thenReturn(testPatron);
+        when(borrowingRecordRepository.findByBook_BookIdAndPatron_PatronIdAndBookState(anyLong(), anyLong(), eq(BookState.BORROWED))).thenReturn(records);
+        when(borrowingRecordRepository.findByBook_BookIdAndBookState(anyLong(), eq(BookState.BORROWED))).thenReturn(records);
+
+        // Assertions
+        assertThrows(BookNotAvailableException.class, () -> {
+            borrowingRecordService.borrowBook(1L, 2L);
+        });
+
+    }
+
+
 
     @Test
     void testReturnBook() {

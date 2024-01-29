@@ -2,6 +2,7 @@ package com.books.library.exceptionHandler;
 
 import com.books.library.exception.*;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +23,7 @@ import java.util.List;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({BookNotFoundException.class,PatronNotFoundException.class })
-    protected ResponseEntity<Object> handleBookNotFound(BookNotFoundException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleBookNotFound(RuntimeException ex, WebRequest request) {
         String path = request.getDescription(false); // Obtain the path dynamically
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage(), ex, path);
         return buildResponseEntity(errorResponse);
@@ -30,11 +31,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler({BookNotAvailableException.class,InvalidBookOwnerException.class, BookCannotBeReturnedException.class })
-    protected ResponseEntity<Object> handleBookNotAvailable(BookNotAvailableException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleBookNotAvailable(RuntimeException ex, WebRequest request) {
         String path = request.getDescription(false); // Obtain the path dynamically
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), ex, path);
         return buildResponseEntity(errorResponse);
     }
+
+
+    @ExceptionHandler({JdbcSQLIntegrityConstraintViolationException.class })
+    protected ResponseEntity<Object> handleUniqueKeyConstraints(JdbcSQLIntegrityConstraintViolationException ex, WebRequest request) {
+        String path = request.getDescription(false); // Obtain the path dynamically
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), ex, path);
+        return buildResponseEntity(errorResponse);
+    }
+
+
 
 
 

@@ -168,12 +168,14 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
         List<BorrowingRecord> rec = borrowingRecordRepository.findByBook_BookIdAndPatron_PatronIdAndBookState(bookId, patronId, BookState.BORROWED);
         List<BorrowingRecord> obj = borrowingRecordRepository.findByBook_BookIdAndBookState(bookId, BookState.BORROWED);
 
-        //same person cannot borrow
-        if (rec != null && rec.size() == 1)
-            throw new InvalidBookOwnerException();
         //book not available
         if (obj != null && obj.size() == 1)
             throw new BookNotAvailableException("Book not available for borrowing");
+
+        //same person cannot borrow
+        if (rec != null && rec.size() == 1)
+            throw new InvalidBookOwnerException();
+
 
         return true;
 
