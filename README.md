@@ -17,6 +17,10 @@ This is a simple Spring Boot application for Library Management  that manages bo
 * Mockito Tests
 * Transactional
 
+## Postman Collection with list of API's
+* Start the application by running Library Application.java class and run below end points to see data.
+  ![img.png](img.png)
+  [Postman_collection](Postman_collection)
 
 ## Entities
 Book
@@ -47,10 +51,7 @@ Link - https://pavs1605.github.io/LibraryManagementAPI/
 ### Borrowing Record
 ![image](https://github.com/Pavs1605/SpringEmpDeptDemo/assets/18229871/eb5ea195-194e-49d0-b1eb-a20e02411391)
 
-## Postman Collection with list of API's
-* Start the application by running Library Application and run below end points to see data.
-![img.png](img.png)
-[Postman_collection](Postman_collection)
+
 
 ## Test Report Results
 Run tests using mvn test
